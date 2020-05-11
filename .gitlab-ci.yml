@@ -1,0 +1,9 @@
+image: "python:3.6"
+
+stages:
+  - test
+
+test:
+  stage: test
+  script:
+  - python3 tests.py
