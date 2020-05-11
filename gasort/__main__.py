@@ -8,6 +8,8 @@
 """
 
 import argparse
+from chromosome import Chromosome
+from genetic import gmutation
 
 
 if __name__ == '__main__':
@@ -18,9 +20,23 @@ if __name__ == '__main__':
     input.add_argument('nums', action='store', type=int, nargs='*', default=[], help='list of numbers')
 
     args = parser.parse_args()
-    # check the mode (file / IO)
+    # check the mode (file / IO) and read the numbers
+    numbers = args.nums
     if args.file is not None:
-        print('reading from file and the file is', args.file)
-    elif args.nums:
-        print('normal I/O and the numbers are', args.nums)
+        file = open(args.file, 'r')
+        numbers = file.readline().split()
+
+    # main genetic
+    # calculate goal state fitness and geneset
+    goal = Chromosome(sorted(numbers))
+    geneset = numbers[:]
+
+
+    parent = Chromosome(numbers[:], goal=goal)
+    while parent.fitness != goal.fitness:
+        child = gmutation(parent, geneset)
+
+        if child.fitness > parent.fitness:
+            parent = child
+            print(child.genes)
 
