@@ -3,7 +3,7 @@
 '''
 
 import random
-from .chromosome import Chromosome
+from chromosome import Chromosome
 
 
 def gmutation(chrom, geneset):

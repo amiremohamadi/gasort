@@ -1,6 +1,14 @@
 import unittest
+import sys
+import pathlib
+
+# append parent directory to PATH
+module = (pathlib.Path(__file__).resolve().parents[0]) / pathlib.Path('gasort')
+sys.path.append(str(module))
+
 from gasort.chromosome import Chromosome
 from gasort.genetic import gmutation
+
 
 class TestChromosome(unittest.TestCase):
     def test_fitness_invalid_case(self):

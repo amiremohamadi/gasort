@@ -18,7 +18,7 @@ class Chromosome:
         '''
 
         # special case (the chromosome itself is the goal)
-        if self.goal.genes == None:
+        if self.goal == None:
             return len(self.genes)
 
         # invalid case
