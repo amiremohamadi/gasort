@@ -6,5 +6,5 @@ sorting numbers using genetic algorithm
 
 ### usage
 ```sh
-python -m gasort # or python __main__.py
+python gasort # or python __main__.py
 ```
