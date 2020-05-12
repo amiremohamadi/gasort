@@ -33,7 +33,7 @@ def gcrossover(chrom1, chrom2):
 
     # two parents must have same goal
     if chrom1.goal.genes != chrom2.goal.genes:
-        raise VlueError('chrom1 and chrom2 must have same goal genes')
+        raise ValueError('chrom1 and chrom2 must have same goal genes')
 
     # generate new gen by crossovering the parents genes
     # NOTE that first parent (chrom1) has more chance
