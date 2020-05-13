@@ -6,6 +6,19 @@ import random
 from chromosome import Chromosome
 
 
+def gpopulation(geneset, goal, size):
+    '''generate random population
+       @params: geneset: List<int>, goal: Chromosome, size: int
+       @return: List<Chromosome>
+    '''
+    population = []
+    for i in range(size):
+        chrom = Chromosome(random.sample(geneset, len(geneset)), goal=goal)
+        population.append(chrom)
+
+    return population
+
+
 def gmutation(chrom, geneset):
     '''mutate a chromosome
        @params: chrom: Chromosome, geneset: List<int>
