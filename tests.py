@@ -8,7 +8,7 @@ module = (pathlib.Path(__file__).resolve().parents[0]) / pathlib.Path('gasort')
 sys.path.append(str(module))
 
 from gasort.chromosome import Chromosome
-from gasort.genetic import gmutation, gcrossover
+from gasort.genetic import gmutation, gcrossover, gpopulation
 
 
 class TestChromosome(unittest.TestCase):
@@ -41,6 +41,17 @@ class TestGenetic(unittest.TestCase):
         crossovered = gcrossover(ch1, ch2)
         self.assertEqual(crossovered.genes, [1, 2, 2, 4, 5])
         self.assertEqual(crossovered.fitness, 4)
+
+    def test_population(self):
+        goal = Chromosome([1, 2, 3, 4])
+        numbers = [1, 2, 3, 4]
+        population = gpopulation(numbers, goal, 10)
+        self.assertEqual(len(population), 10)
+        self.assertTrue(hasattr(population[0], 'fitness'))
+
+        # test goal
+        for obj in population:
+            self.assertEqual(obj.goal, goal)
 
 
 if __name__ == '__main__':
