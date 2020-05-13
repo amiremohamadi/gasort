@@ -3,13 +3,18 @@
       sorting bunch of numbers using genetic algorithm
     ----------------------------------------------------
 
-    - version 0.1
+    - version 1.1
     - changelog:
+      -- add crossover
+      -- use mutation under a probablity
+      -- add selection
+      -- genearte population
 """
 
 import argparse
+import random
 from chromosome import Chromosome
-from genetic import gmutation
+from genetic import gmutation, gpopulation, gcrossover, gselect
 
 
 if __name__ == '__main__':
@@ -31,12 +36,26 @@ if __name__ == '__main__':
     goal = Chromosome(sorted(numbers))
     geneset = numbers[:]
 
+    # generate population
+    population = gpopulation(geneset, goal, 10)
 
-    parent = Chromosome(numbers[:], goal=goal)
-    while parent.fitness != goal.fitness:
-        child = gmutation(parent, geneset)
+    while True:
+        # selection
+        chrom1, chrom2 = gselect(population)
 
-        if child.fitness > parent.fitness:
-            parent = child
-            print(child.genes)
+        # repeat until reach the goal
+        if chrom1.fitness == goal.fitness:
+            break
+
+        # crossover (uniform)
+        chrom3 = gcrossover(chrom1, chrom2)
+        population.append(chrom3)
+        
+        # ignore mutation (under a random probablity)
+        if random.randrange(10) % 3:
+            continue
+
+        # do mutation
+        chrom4 = gmutation(chrom3, geneset)
+        population.append(chrom4)
 
