@@ -54,3 +54,21 @@ def gcrossover(chrom1, chrom2):
     genes = [chrom1.genes[i] if (random.randrange(0, 3) < 2) else chrom2.genes[i] for i in range(n)] 
 
     return Chromosome(genes, goal=chrom1.goal)
+
+def gselect(population):
+    '''select max and second-max from the population
+       @params: population: List<Chromosome>
+       @return: List<Chromsome>
+    '''
+    # len must be at least 1
+    if len(population) < 1:
+        raise ValueError('len(population) must be at least 1')
+
+    # start with first element
+    maxim, second_maxim = population[0], population[0]
+    # iterate and find max and second_max
+    for chrom in population:
+        if chrom.fitness > maxim.fitness:
+            second_maxim, maxim = maxim, chrom
+
+    return [maxim, second_maxim]

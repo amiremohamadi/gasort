@@ -8,7 +8,7 @@ module = (pathlib.Path(__file__).resolve().parents[0]) / pathlib.Path('gasort')
 sys.path.append(str(module))
 
 from gasort.chromosome import Chromosome
-from gasort.genetic import gmutation, gcrossover, gpopulation
+from gasort.genetic import gmutation, gcrossover, gpopulation, gselect
 
 
 class TestChromosome(unittest.TestCase):
@@ -52,6 +52,17 @@ class TestGenetic(unittest.TestCase):
         # test goal
         for obj in population:
             self.assertEqual(obj.goal, goal)
+
+    def test_gselect(self):
+        goal = Chromosome([1, 2, 3])
+        population = [Chromosome([3, 2, 1], goal),
+                      Chromosome([1, 2, 3], goal),
+                      Chromosome([2, 3, 1], goal)
+                ]
+
+        maxim, secondmaxim = gselect(population)
+        self.assertEqual(maxim.genes, Chromosome([1, 2, 3], goal).genes)
+        self.assertEqual(secondmaxim.genes, Chromosome([3, 2, 1], goal).genes)
 
 
 if __name__ == '__main__':
