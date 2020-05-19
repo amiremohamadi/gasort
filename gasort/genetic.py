@@ -149,3 +149,5 @@ def gsolve(geneset):
         chrom4 = gmutation(chrom1, geneset)
         ginsert(chrom4, population)
 
+    return population
+

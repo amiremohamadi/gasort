@@ -13,6 +13,7 @@
 
 import argparse
 import random
+import matplotlib.pyplot as plt
 from chromosome import Chromosome
 from genetic import gsolve 
 
@@ -42,5 +43,9 @@ if __name__ == '__main__':
 
     # solve the problem, implemention of main functions related to GA
     # are located in genetic.py
-    gsolve(numbers)
+    generations = gsolve(numbers)
+
+    plt.plot([x.fitness for x in reversed(generations)])
+    plt.title('Fitness Evolution Diagram')
+    plt.show()
 
