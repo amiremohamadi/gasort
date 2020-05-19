@@ -4,11 +4,10 @@ from functools import lru_cache
 
 
 class Chromosome:
-    __slots__ = ('genes', 'goal')
+    __slots__ = ('genes')
 
-    def __init__(self, genes, goal=None):
+    def __init__(self, genes):
         self.genes = genes
-        self.goal = goal
 
     @property
     @lru_cache(maxsize=None)
@@ -16,18 +15,16 @@ class Chromosome:
         '''calculate fitness value
            count number of items at the correct position
         '''
+        # the idea is to compare all elements with previous ones
+        # if the element is smaller than any of previous neighbours
+        # we add their difference to 'score' variable
+        # at the end, we'll return (10^9 - score) because we want to 
+        # keep sorted chromosomes fitness, higher
+        score = 0
+        n = len(self.genes)
+        for i in range(n):
+            for j in range(i):
+                if self.genes[i] <= self.genes[j]:
+                    score += self.genes[j] - self.genes[i]
 
-        # special case (the chromosome itself is the goal)
-        if self.goal == None:
-            return len(self.genes)
-
-        # invalid case
-        if len(self.genes) != len(self.goal.genes):
-            raise ValueError('goal and chromosome must have same len')
-
-        # merge chromosomes and make gene pairs
-        pair = zip(self.genes, self.goal.genes)
-        # number of items in the correct position
-        score = sum([1 for (g1, g2) in pair if g1 == g2])
-
-        return score
+        return 1e9 - score

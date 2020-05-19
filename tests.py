@@ -12,57 +12,42 @@ from gasort.genetic import gmutation, gcrossover, gpopulation, gselect
 
 
 class TestChromosome(unittest.TestCase):
-    def test_fitness_invalid_case(self):
-        goal = Chromosome([1, 2, 3])
-        ch1 = Chromosome([1, 2, 3, 4], goal=goal)
-        with self.assertRaises(ValueError):
-            ch1.fitness
-
     def test_ftness_calculate(self):
-        goal = Chromosome([1, 2, 3, 4])
-        ch1 = Chromosome([1, 2, 4, 3], goal=goal)
-        self.assertEqual(ch1.fitness, 2)
+        ch1 = Chromosome([1, 2, 3, 4])
+        self.assertEqual(ch1.fitness, 1e9)
 
+        ch2 = Chromosome([1, 2, 4, 3])
+        self.assertEqual(ch2.fitness, 1e9 - 1)
 
 class TestGenetic(unittest.TestCase):
     def test_mutation(self):
         geneset = [1, 2, 3, 4]
-        goal = Chromosome([1, 2, 3, 4])
-        ch = Chromosome([1, 3, 2, 4], goal=goal)
+        ch = Chromosome([1, 3, 2, 4])
         mutated = gmutation(ch, geneset)
         self.assertNotEqual(mutated.genes, ch.genes)
 
     def test_crossover(self):
-        goal = Chromosome([1, 2, 3, 4, 5])
-        ch1 = Chromosome([1, 2, 2, 4, 4], goal=goal)
-        ch2 = Chromosome([1, 3, 2, 4, 5], goal=goal)
+        ch1 = Chromosome([2, 1, 3, 4, 5])
+        ch2 = Chromosome([1, 3, 2, 4, 5])
 
-        random.seed(900)
+        random.seed(901)
         crossovered = gcrossover(ch1, ch2)
-        self.assertEqual(crossovered.genes, [1, 2, 2, 4, 5])
-        self.assertEqual(crossovered.fitness, 4)
+        self.assertEqual(crossovered.genes, [2, 5, 3, 4, 1])
 
     def test_population(self):
-        goal = Chromosome([1, 2, 3, 4])
         numbers = [1, 2, 3, 4]
-        population = gpopulation(numbers, goal, 10)
-        self.assertEqual(len(population), 10)
+        population = gpopulation(numbers, 10)
         self.assertTrue(hasattr(population[0], 'fitness'))
 
-        # test goal
-        for obj in population:
-            self.assertEqual(obj.goal, goal)
-
     def test_gselect(self):
-        goal = Chromosome([1, 2, 3])
-        population = [Chromosome([3, 2, 1], goal),
-                      Chromosome([1, 2, 3], goal),
-                      Chromosome([2, 3, 1], goal)
+        population = [Chromosome([3, 2, 1]),
+                      Chromosome([1, 2, 3]),
+                      Chromosome([2, 3, 1])
                 ]
 
         maxim, secondmaxim = gselect(population)
-        self.assertEqual(maxim.genes, Chromosome([1, 2, 3], goal).genes)
-        self.assertEqual(secondmaxim.genes, Chromosome([3, 2, 1], goal).genes)
+        self.assertEqual(maxim.genes, Chromosome([3, 2, 1]).genes)
+        self.assertEqual(secondmaxim.genes, Chromosome([1, 2, 3]).genes)
 
 
 if __name__ == '__main__':
