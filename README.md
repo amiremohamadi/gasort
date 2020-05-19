@@ -41,6 +41,7 @@ python tests.py
 <p align="center"><img src="fitness_evolution.png" width="580"></p>
 
 here's a banchmark of running `gasort` on 50 numbers 10 times
+
 | nth run     | time in seconds | 
 |-------------|-------------|
 | 1           | 7.030         |
