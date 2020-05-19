@@ -49,8 +49,6 @@ here's a banchmark of running `gasort` on 50 numbers 10 times
 | 3           | 7.446         |
 | 4          | 7.740          |
 | 5          | 8.040          |
-| 5          | 8.040          |
-| 6          | 12.41          |
 | 6          | 12.41          |
 | 7          | 5.633          |
 | 8          | 5.633          |
