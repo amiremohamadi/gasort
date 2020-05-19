@@ -20,15 +20,27 @@ from genetic import gsolve
 if __name__ == '__main__':
     # argument parser stuffs
     parser = argparse.ArgumentParser(description='sorting numbers using GA')
+    # input can be file / normal user stdin
+    # only one of them can be used
     input = parser.add_mutually_exclusive_group(required=True)
-    input.add_argument('-f', '--file', action='store', type=str, help='read from file')
-    input.add_argument('nums', action='store', type=int, nargs='*', default=[], help='list of numbers')
+    # file argument parser
+    input.add_argument('-f', '--file', action='store', type=str,
+            help='read from file')
+    # default stdin argument parser
+    input.add_argument('nums', action='store', type=int, nargs='*',
+            default=[], help='list of numbers')
 
     args = parser.parse_args()
-    # check the mode (file / IO) and read the numbers
+    
+    # read numbers (file mode / stdin)
     numbers = args.nums
     if args.file is not None:
         file = open(args.file, 'r')
+        # file must be in this format:
+        # Eg. 1 2 3 4 5 6
         numbers = file.readline().split()
 
+    # solve the problem, implemention of main functions related to GA
+    # are located in genetic.py
     gsolve(numbers)
+
