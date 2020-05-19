@@ -6,8 +6,35 @@ import random
 from chromosome import Chromosome
 
 
+def ginsert(child, population):
+    '''insert child to the population, if child fitness is more than any
+       item in the population list
+       @params: child: Chromosome, population: List<Chromosome>
+       @return: bool
+    '''
+    maximum1, maximum2 = None, None
+
+    if len(population) > 0:
+        maximum1 = population[0]
+    if len(population) > 1:
+        maximum2 = population[1]
+
+    if maximum2 and child.fitness < maximum2.fitness:
+        return False
+    
+    if not maximum1 or child.fitness > maximum1.fitness:
+        # insert to the first of the list
+        population.insert(0, child)
+        return True
+    
+    if not maximum2 or child.fitness > maximum2.fitness:
+        population.insert(1, child)
+        return True
+
+    return False
+
 def gpopulation(geneset, size):
-    '''generate random population
+    '''generate random population, len(population) is at 'MOST' equal to size
        @params: geneset: List<int>, size: int
        @return: List<Chromosome>
     '''
@@ -17,7 +44,7 @@ def gpopulation(geneset, size):
     for i in range(size):
         # make population by permuting geneset items
         chrom = Chromosome(random.sample(geneset, n))
-        population.append(chrom)
+        ginsert(chrom, population)
 
     return population
 
@@ -92,10 +119,33 @@ def gselect(population):
         raise ValueError('len(population) must be at least 1')
 
     # start with first element
-    maxim, second_maxim = population[0], population[0]
-    # iterate and find max and second_max
-    for chrom in population:
-        if chrom.fitness > maxim.fitness:
-            second_maxim, maxim = maxim, chrom
-
+    maxim, second_maxim = population[:2]
     return [maxim, second_maxim]
+
+def gsolve(geneset):
+    '''use other functions to solve the problem'''
+
+    # generate population
+    population = gpopulation(geneset, 10)
+
+    while True:
+        # selection
+        chrom1, chrom2 = gselect(population)
+
+        print(chrom1.genes, chrom1.fitness)
+        # repeat until reach the goal (1e9 fitness)
+        if chrom1.fitness == 1e9:
+            break
+
+        # crossover (ordered)
+        chrom3 = gcrossover(chrom1, chrom2)
+        ginsert(chrom3, population)
+        
+        # UNCOMMENT THIS IF YOU WANT IGNORE MUTATION UNDER A RANDOM PROBABLITY
+        # if random.randrange(10) % 2:
+        #     continue
+
+        # mutation
+        chrom4 = gmutation(chrom1, geneset)
+        ginsert(chrom4, population)
+

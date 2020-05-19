@@ -14,7 +14,7 @@
 import argparse
 import random
 from chromosome import Chromosome
-from genetic import gmutation, gpopulation, gcrossover, gselect
+from genetic import gsolve 
 
 
 if __name__ == '__main__':
@@ -31,32 +31,4 @@ if __name__ == '__main__':
         file = open(args.file, 'r')
         numbers = file.readline().split()
 
-    # main genetic
-    # calculate goal state fitness and geneset
-    goal = Chromosome(sorted(numbers))
-    geneset = numbers[:]
-
-    # generate population
-    population = gpopulation(geneset, 10)
-
-    while True:
-        # selection
-        chrom1, chrom2 = gselect(population)
-
-        print(chrom1.genes, chrom1.fitness)
-        # repeat until reach the goal
-        if chrom1.genes == goal.genes:
-            break
-
-        # crossover (uniform)
-        chrom3 = gcrossover(chrom1, chrom2)
-        population.append(chrom3)
-        
-        # # ignore mutation (under a random probablity)
-        if random.randrange(10) % 2:
-            continue
-
-        # do mutation
-        chrom4 = gmutation(chrom1, geneset)
-        population.append(chrom4)
-
+    gsolve(numbers)
