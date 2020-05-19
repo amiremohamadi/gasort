@@ -37,25 +37,26 @@ if __name__ == '__main__':
     geneset = numbers[:]
 
     # generate population
-    population = gpopulation(geneset, goal, 10)
+    population = gpopulation(geneset, 10)
 
     while True:
         # selection
         chrom1, chrom2 = gselect(population)
 
+        print(chrom1.genes, chrom1.fitness)
         # repeat until reach the goal
-        if chrom1.fitness == goal.fitness:
+        if chrom1.genes == goal.genes:
             break
 
         # crossover (uniform)
         chrom3 = gcrossover(chrom1, chrom2)
         population.append(chrom3)
         
-        # ignore mutation (under a random probablity)
-        if random.randrange(10) % 3:
+        # # ignore mutation (under a random probablity)
+        if random.randrange(10) % 2:
             continue
 
         # do mutation
-        chrom4 = gmutation(chrom3, geneset)
+        chrom4 = gmutation(chrom1, geneset)
         population.append(chrom4)
 

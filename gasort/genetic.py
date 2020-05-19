@@ -6,14 +6,17 @@ import random
 from chromosome import Chromosome
 
 
-def gpopulation(geneset, goal, size):
+def gpopulation(geneset, size):
     '''generate random population
-       @params: geneset: List<int>, goal: Chromosome, size: int
+       @params: geneset: List<int>, size: int
        @return: List<Chromosome>
     '''
     population = []
+    n = len(geneset)
+
     for i in range(size):
-        chrom = Chromosome(random.sample(geneset, len(geneset)), goal=goal)
+        # make population by permuting geneset items
+        chrom = Chromosome(random.sample(geneset, n))
         population.append(chrom)
 
     return population
@@ -24,36 +27,60 @@ def gmutation(chrom, geneset):
        @params: chrom: Chromosome, geneset: List<int>
        @return: Chromosome
     '''
-    new_chrom = Chromosome(chrom.genes[:], goal=chrom.goal) # copy of the chrom
+    _chrom = Chromosome(chrom.genes[:]) # make a copy
+    n = len(_chrom.genes)
 
-    # change a random element
-    index = random.randrange(0, len(chrom.genes))
-    while new_chrom.genes[index] == chrom.genes[index]:
-        new_gene = random.choice(geneset)
-        new_chrom.genes[index] = new_gene
+    # swap random element
+    i1, i2 = random.sample(range(n), 2)
+    _chrom.genes[i1], _chrom.genes[i2] = _chrom.genes[i2] ,_chrom.genes[i1]
 
-    return new_chrom
+    return _chrom
 
 def gcrossover(chrom1, chrom2):
-    '''uniform crossover, chrom1 concidered as the one with higher fitness
-       so it has more chance
+    '''order1 crossover (OX), for more information check this out:
+       http://mat.uab.cat/~alseda/MasterOpt/GeneticOperations.pdf
        @params: chrom1, chrom2: Chromosome
        @return: Chromosome
     '''
+
     # two parents must have same len
     if len(chrom1.genes) != len(chrom2.genes):
         raise ValueError('chrom1 and chrom2 must have same len')
 
-    # two parents must have same goal
-    if chrom1.goal.genes != chrom2.goal.genes:
-        raise ValueError('chrom1 and chrom2 must have same goal genes')
+
+    # make copy of two genes to keep them immutable
+    parent1 = Chromosome(chrom1.genes[:])
+    parent2 = Chromosome(chrom2.genes[:])
 
     # generate new gen by crossovering the parents genes
-    # NOTE that first parent (chrom1) has more chance
-    n = len(chrom1.genes)
-    genes = [chrom1.genes[i] if (random.randrange(0, 3) < 2) else chrom2.genes[i] for i in range(n)] 
+    n = len(parent1.genes)
 
-    return Chromosome(genes, goal=chrom1.goal)
+    # step 1: Select a random swath of consecutive alleles from parent 1
+    # step 2: Drop the swath down to Child 1 and mark out these alleles in Parent 2
+    # step 3: Starting on the right side of the swath, grab alleles from parent 2
+    # and insert them in Child 1 at the right edge of the swath.
+    i1, i2 = random.sample(range(n), 2)
+
+    # i2 must be greater than i1
+    if i2 < i1:
+        i1, i2 = i2, i1
+
+    # remove range(i1, i2) elements from parent 2
+    i1toi2 = parent1.genes[i1:i2+1]
+    cycle = []
+    for i in range(n):
+        if parent2.genes[i] not in i1toi2:
+            cycle.append(parent2.genes[i])
+
+    # make the child, step2 and step3
+    child = Chromosome(parent1.genes[:])
+    # walk through cycle and replace child genes (start right after i2)
+    index = (i2 + 1) % n
+    for ele in cycle:
+        child.genes[index] = ele
+        index = (index + 1) % n
+
+    return child 
 
 def gselect(population):
     '''select max and second-max from the population
