@@ -39,7 +39,7 @@ if __name__ == '__main__':
         file = open(args.file, 'r')
         # file must be in this format:
         # Eg. 1 2 3 4 5 6
-        numbers = file.readline().split()
+        numbers = list(map(int, file.readline().split()))
 
     # solve the problem, implemention of main functions related to GA
     # are located in genetic.py
